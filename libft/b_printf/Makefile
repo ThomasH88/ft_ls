@@ -6,56 +6,35 @@
 #    By: tholzheu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/10 16:42:11 by tholzheu          #+#    #+#              #
-#    Updated: 2018/10/23 14:43:09 by tholzheu         ###   ########.fr        #
+#    Updated: 2018/10/21 19:42:43 by tholzheu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ft_ls
+NAME = libftprintf.a
 
-HEADER = ft_ls.h
+INCLUDES = b_printf.h/
 
-LIB1 = libft/libft.a
+FLAGS = -Wall -Werror -Wextra -c
 
-LIB2 = libft/b_printf/libftprintf.a
+SRCS = b_printf.c \
+	  ft_putnbr_printf.c \
+	  ft_string.c \
+	  itoa_base.c \
+	  p_itoa_base.c
 
-FLAGS = -Wall -Werror -Wextra -o
-
-SRCS = ft_ls.c \
-	   basic_list.c \
-	   classify.c \
-	   exit_errors.c \
-	   print_list.c \
-	   print_long_fmt.c \
-	   side_long_fmt.c \
-	   side_funct.c \
-	   recursion.c \
-	   sort_list.c
-
-SRCO = $(SRCS:.c=.o)
+SRCO = $(SRCS:%.c=%.o)
 
 $(NAME):
-	make -C libft/
-	gcc $(FLAGS) $(NAME) $(SRCS) $(LIB1) $(LIB2) -I=$(HEADER)
-
+	gcc $(FLAGS) $(SRCS) -I=$(INCLUDES)
+	ar rcs $(NAME) $(SRCO)
 all: $(NAME)
 
-san: fclean
-	make -C libft/
-	gcc -fsanitize=address -g $(FLAGS) $(NAME) $(SRCS) $(LIB1) $(LIB2) -I=$(HEADER)
-
+run: re
+	gcc main*.c -L. -lftprintf -I $(INCLUDES)
 clean:
-	make clean -C libft/
 	/bin/rm -f $(SRCO)
 
 fclean: clean
-	make fclean -C libft/
-	/bin/rm -rf $(NAME) *.out* *.dSYM
+	/bin/rm -f $(NAME) *.out
 
 re: fclean all
-
-git: fclean
-	git add .
-	git reset HEAD *main*
-	git status
-	git commit -m "update"
-	git push
